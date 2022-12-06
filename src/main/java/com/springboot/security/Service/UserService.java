@@ -32,9 +32,12 @@ public class UserService {
     private final BCryptPasswordEncoder encoder;
 
 
+    // 회원가입 기능
+    public UserDto join(UserJoinRequest request){
     // 데이터가 없을경우 정상동작, 데이터가 이미 있을겨우 오류 발생(회원가입 불가)
     // 유저에게 입력받은 데이터 중복 검사 및 DB 저장
-    public UserDto join(UserJoinRequest request){
+
+
         userRepository.findByUserName(request.getUserName())
     // 1. RuntimeException 에러타임 보내기(에러 설정클래스에서 RuntimeException에 해당하는 메서드 실행됨
     //            .ifPresent(user -> new RuntimeException("해당 UserName이 중복 됩니다"));   // 데이터가 있을경우 예외처리(콘솔에만 출력됨)
@@ -54,8 +57,28 @@ public class UserService {
      // 2. 기존 클래스인 BCryptPasswordEncoder를 DI를 받아 사용하는 법
      //     BCryptPasswordEncoder클래스안에 있는 메서드 encode() 기능 사용 => 자동으로 EncrypterConfig Bean과 연결됨
         User saveUser2 = userRepository.save(request.toEntity(encoder.encode(request.getPassword())));    // UserJoinRequest -> User Entity변환후 데이터 DB 저장 , password는 암호화 하여 저장
-
-
+        
         return UserDto.fromEntity(saveUser2);    // User에게 입력받아 회원가입한 데이터를 UserDto에 저장함
+    }
+
+    
+    
+    
+    // 로그인 기능
+    public String login(String userName, String password) {
+        // 유저이름(ID)이 있는지 확인
+        // 없다면 Not Found 에러 발생
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(()-> new HospitalReviewAppException(ErrorCode.NOT_FOUND,String.format("%s는 가입된 적이 없습니다.",userName)));
+
+        // password일치 하는지 여부 확인
+        if(!encoder.matches(password,user.getPassword())){      // encoder.matches는 암호화된 문자를 입력된 문자와 비교해주는 메서드이다
+            throw new HospitalReviewAppException(ErrorCode.INVALID_PASSWORD,String.format("비밀번호가 틀립니다."));
+        }
+
+        // 두가지 확인 중 에외가 없다면 token 발행
+
+
+        return "";
     }
 }
