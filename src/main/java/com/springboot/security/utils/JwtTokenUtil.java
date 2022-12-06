@@ -13,7 +13,7 @@ public class JwtTokenUtil {
 
         return Jwts.builder()       // 토큰 생성
                 .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis()))      // 시작 시간 : 현재 시간기준으로 만들어짐
+                .setIssuedAt(new Date(System.currentTimeMillis()))      //  시작 시간 : 현재 시간기준으로 만들어짐
                 .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))     // 끝나는 시간 : 지금 시간 + 정해둔 시간
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact()
