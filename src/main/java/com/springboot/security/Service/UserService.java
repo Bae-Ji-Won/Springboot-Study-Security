@@ -10,7 +10,9 @@ import com.springboot.security.Exception.HospitalReviewAppException;
 import com.springboot.security.Repository.UserRepository;
 
 import com.springboot.security.configuration.EncrypterConfig;
+import com.springboot.security.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,11 @@ public class UserService {
     // DI를 하겠다 선언하면 알아서 해당 설정 Bean파일인 EncrypterConfig과 매칭을 시켜서 사용할 수 있게 해준다.
     private final BCryptPasswordEncoder encoder;
 
+    // jwt 토큰에서 토큰 이름을 숨겨두고 해당 이름을 호출한다.(코드상에 토큰 이름이 있으면 절대 안됨, 바로 해킹당함)
+    // application.yml 파일에 토큰 가짜 이름을 넣는다(실제 값은 environment variables에 넣는다)
+    @Value("${jwt.token.secret}")
+    private String secretkey;   // application.yml에서 설정한 token 키의 값을 저장함
+    private long expireTimeMs = 1000*60*60; // 토큰 1시간
 
     // 회원가입 기능
     public UserDto join(UserJoinRequest request){
@@ -77,8 +84,6 @@ public class UserService {
         }
 
         // 두가지 확인 중 에외가 없다면 token 발행
-
-
-        return "";
+        return JwtTokenUtil.createToken(userName,secretkey,expireTimeMs);
     }
 }
