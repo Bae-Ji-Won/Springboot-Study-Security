@@ -7,6 +7,7 @@ import com.springboot.security.Domain.dto.UserJoinRequest;
 import com.springboot.security.Exception.ErrorCode;
 import com.springboot.security.Exception.HospitalReviewAppException;
 import com.springboot.security.Service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,18 +42,21 @@ class UserControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-
+    UserJoinRequest userJoinRequest;
+    @BeforeEach         // 중복되는 코드 따로 빼내서 사용
+    public void setup() {
+        userJoinRequest = UserJoinRequest.builder()
+                .userName("han")
+                .password("1q2w3e4r")
+                .email("oceanfog1@gmail.com")
+                .build();
+    }
 
     @Test
     @DisplayName("회원가입 성공")
     @WithMockUser
     void join_success() throws Exception {
         // given
-        UserJoinRequest userJoinRequest = UserJoinRequest.builder()
-                .userName("han")
-                .password("1q2w3e4r")
-                .email("oceanfog1@gmail.com")
-                .build();
 
         User user = userJoinRequest.toEntity(encoder.encode(userJoinRequest.getPassword()));        // 비밀번호 암호화
         UserDto userDto = UserDto.fromEntity(user);
@@ -76,11 +80,7 @@ class UserControllerTest {
     @DisplayName("회원가입 실패")
     @WithMockUser
     void join_fail() throws Exception {
-        UserJoinRequest userJoinRequest = UserJoinRequest.builder()
-                .userName("han")
-                .password("1q2w3e4r")
-                .email("oceanfog1@gmail.com")
-                .build();
+        setup();
 
         // 이전에는 when/thenReturn을 통해 구현했는데 그렇게 하면 given 구역에서 when을 사용하면 헷갈릴 수 있으므로 given으로 구역을 표시하며 정확히 한다.
         given(userService.join(any()))
@@ -94,5 +94,39 @@ class UserControllerTest {
                 .andExpect(status().isConflict());
 
         verify(userService).join(any());
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - id없음")
+    @WithMockUser
+    void login_fail1() throws Exception{
+        setup();
+
+
+        given(userService.login(any(),any()))
+                .willThrow(new HospitalReviewAppException(ErrorCode.NOT_FOUND, ""));
+
+        mockMvc.perform(post("/api/v1/users/login")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(userJoinRequest)))
+                .andDo(print())
+                .andExpect(status().isNotFound());      // id가 없으므로 찾을수가 없다 (404)
+
+        verify(userService).join(any());
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - password잘못 입력")
+    @WithMockUser
+    void login_fail2() throws Exception{
+
+    }
+
+    @Test
+    @DisplayName("로그인 성공")
+    @WithMockUser
+    void login_success() throws Exception{
+
     }
 }
