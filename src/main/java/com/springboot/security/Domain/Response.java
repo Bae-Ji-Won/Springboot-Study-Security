@@ -5,7 +5,8 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-// 에러코드를 포함시켜 코드의 상태확인(정상인지, 오류인지)
+// 최종 결과를 Response에 담아 코드의 상태를 함께 출력해준다.(성공인지 , 오류인지) => 구조{성공유무, 데이터 :{ } }
+// 그래야 유저도 어디에서 오류가 발생한지 알 수 있으니
 // 모든 Response는 현재 Response객체로 감싸서 Return 한다.
 public class Response<T> {
     private String resultCode;
