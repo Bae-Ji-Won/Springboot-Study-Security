@@ -84,6 +84,6 @@ public class UserService {
         }
 
         // 두가지 확인 중 에외가 없다면 token 발행
-        return JwtTokenUtil.createToken(userName,secretkey,expireTimeMs);
+        return JwtTokenUtil.createToken(userName,expireTimeMs,secretkey);
     }
 }
