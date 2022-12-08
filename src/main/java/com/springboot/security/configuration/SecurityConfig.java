@@ -8,7 +8,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// Security를 사용할때 기본 설정파일
+// SecurityFilterChain 기본 설정파일
 // 이전에는 WebSecurityConfigurerAdapter를 상속받아 사용했지만 이제는 Bean폴더를 만들어서 사용함
 
 @EnableWebSecurity  // 스프링 시큐리티를 활성화하는 어노테이션
