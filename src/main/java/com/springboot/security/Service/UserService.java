@@ -1,10 +1,8 @@
 package com.springboot.security.Service;
 
-import com.springboot.security.Domain.Response;
 import com.springboot.security.Domain.User;
 import com.springboot.security.Domain.dto.UserDto;
 import com.springboot.security.Domain.dto.UserJoinRequest;
-import com.springboot.security.Domain.dto.UserJoinResponse;
 import com.springboot.security.Exception.ErrorCode;
 import com.springboot.security.Exception.HospitalReviewAppException;
 import com.springboot.security.Repository.UserRepository;
@@ -68,9 +66,9 @@ public class UserService {
         return UserDto.fromEntity(saveUser2);    // User에게 입력받아 회원가입한 데이터를 UserDto에 저장함
     }
 
-    
-    
-    
+
+
+
     // 로그인 기능
     public String login(String userName, String password) {
         // 유저이름(ID)이 있는지 확인
