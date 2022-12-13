@@ -15,7 +15,8 @@ public enum ErrorCode {
     // DUPLICATED_USER_NAME의 이름을 가진 에러에 (에러상태 Conflict(409) 출력, 에러메세지)의 값을 넣은 구조만 받는다.
     DUPLICATED_USER_NAME(HttpStatus.CONFLICT, "User name is duplicated."),  // 중복검사할때 에러
     NOT_FOUND(HttpStatus.NOT_FOUND,"Not Found"),        // 로그인할때 에러
-    INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"");
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED,""),
+    USERNAME_NOTFOUND(HttpStatus.NOT_FOUND,"");
 
     private HttpStatus status;
     private String message;
