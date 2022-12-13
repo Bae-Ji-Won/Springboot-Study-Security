@@ -4,7 +4,7 @@ import com.springboot.security.Domain.User;
 import com.springboot.security.Domain.dto.UserDto;
 import com.springboot.security.Domain.dto.UserJoinRequest;
 import com.springboot.security.Exception.ErrorCode;
-import com.springboot.security.Exception.HospitalReviewAppException;
+import com.springboot.security.Exception.AppException;
 import com.springboot.security.Repository.UserRepository;
 
 import com.springboot.security.configuration.EncrypterConfig;
@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +48,7 @@ public class UserService {
     // 2. 내가 원하는 에러코드를 만들어서 설정하기
     // enum클래스를 통해 미리 설정해둔 에러구조를 통해 에러를 넘겨준다.
                 .ifPresent(user -> {
-                    throw new HospitalReviewAppException(ErrorCode.DUPLICATED_USER_NAME,String.format("Username :"+request.getUserName()));
+                    throw new AppException(ErrorCode.DUPLICATED_USER_NAME,String.format("Username :"+request.getUserName()));
                 });
 
 
@@ -74,11 +72,11 @@ public class UserService {
         // 유저이름(ID)이 있는지 확인
         // 없다면 Not Found 에러 발생
         User user = userRepository.findByUserName(userName)
-                .orElseThrow(()-> new HospitalReviewAppException(ErrorCode.NOT_FOUND,String.format("%s는 가입된 적이 없습니다.",userName)));
+                .orElseThrow(()-> new AppException(ErrorCode.NOT_FOUND,String.format("%s는 가입된 적이 없습니다.",userName)));
 
         // password일치 하는지 여부 확인
         if(!encoder.matches(password,user.getPassword())){      // encoder.matches는 암호화된 문자를 입력된 문자와 비교해주는 메서드이다
-            throw new HospitalReviewAppException(ErrorCode.INVALID_PASSWORD,String.format("비밀번호가 틀립니다."));
+            throw new AppException(ErrorCode.INVALID_PASSWORD,String.format("비밀번호가 틀립니다."));
         }
 
         // 두가지 확인 중 에외가 없다면 token 발행
