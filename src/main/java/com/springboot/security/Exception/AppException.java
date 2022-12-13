@@ -6,7 +6,7 @@ import lombok.Getter;
 // 내가 지정한 클래스내에서만 오류처리하기
 @Getter
 @AllArgsConstructor
-public class HospitalReviewAppException extends RuntimeException{
+public class AppException extends RuntimeException{
     private ErrorCode errorCode;    //  Service로부터 생성자를 통해 ErrorCode.DUPLICATED_USER_NAME 저장됨
     private String message;         // Service로부터 생성자를 통해 String.format("Username :"+request.getUserName()) 저장됨
 
