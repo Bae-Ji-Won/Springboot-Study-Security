@@ -20,8 +20,8 @@ public class ExceptionManager {
     }
 
     // 기존에 만들어둔 에러(HospitalReviewAppException)가 발생시 동작
-    @ExceptionHandler(HospitalReviewAppException.class)
-    public ResponseEntity<?> hospitalReviewAppExceptionHandler(HospitalReviewAppException e){
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<?> hospitalReviewAppExceptionHandler(AppException e){
         return ResponseEntity.status(e.getErrorCode().getStatus())
                .body(Response.error(e.getErrorCode().name()));
     }
